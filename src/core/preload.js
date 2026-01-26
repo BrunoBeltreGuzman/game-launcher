@@ -102,5 +102,11 @@ contextBridge.exposeInMainWorld('api', {
         updateGameByLocalName(game);
         return game;
     },
+    shutdownPc: () => {
+        return ipcRenderer.invoke('shutdown-pc');
+    },
+    restartPc: () => {
+        return ipcRenderer.invoke('restart-pc');
+    },
     config: config
 });

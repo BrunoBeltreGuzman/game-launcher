@@ -1,4 +1,5 @@
 const MOVE_DELAY = 200;
+const HOLD_TIME = 1500;
 const SELECT_GAME_DELAY = 5000;
 const SOUND_PATH_PLAY = './sound/play.wav';
 const SOUND_PATH_SYSTEM = './sound/system.mp3';
@@ -8,6 +9,12 @@ let isPlay = false;
 let gamepadIndex = null;
 let lastMove = 0;
 let selectedIndex = 0;
+let bPressedAt = null;
+let xPressedAt = null;
+let yPressedAt = null;
+let shutdownDone = false;
+let restartDone = false;
+let closeDone = false;
 
 const cards = () => document.querySelectorAll('.card');
 
@@ -118,12 +125,53 @@ function handleGamepad(gp) {
         cards()[selectedIndex]?.click();
     }
 
+    // B pressed long shutdown pc
+    if (gp.buttons[1].pressed) {
+        if (!bPressedAt) bPressedAt = now;
+
+        if (now - bPressedAt > HOLD_TIME && !shutdownDone) {
+            shutdownDone = true;
+            window.api.shutdownPc();
+        }
+    } else {
+        bPressedAt = null;
+        shutdownDone = false;
+    }
+
+    // X pressed long restart pc
+    if (gp.buttons[2].pressed) {
+        if (!xPressedAt) xPressedAt = now;
+
+        if (now - xPressedAt > HOLD_TIME && !restartDone) {
+            restartDone = true;
+            window.api.restartPc();
+        }
+    } else {
+        xPressedAt = null;
+        restartDone = false;
+    }
+
+    // Y pressed long close app
+    if (gp.buttons[3].pressed) {
+        if (!yPressedAt) yPressedAt = now;
+
+        if (now - yPressedAt > HOLD_TIME && !restartDone) {
+            restartDone = true;
+            window.close();
+        }
+    } else {
+        yPressedAt = null;
+        closeDone = false;
+    }
+
     // D-Pad
     if (gp.buttons[15].pressed) moveSelection(1);
     if (gp.buttons[14].pressed) moveSelection(-1);
     if (gp.buttons[13].pressed) moveSelection(cols);
     if (gp.buttons[12].pressed) moveSelection(-cols);
 }
+
+
 
 window.addEventListener("keydown", (e) => {
     switch (e.key) {

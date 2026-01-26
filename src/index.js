@@ -41,11 +41,34 @@ ipcMain.handle('execute-game', (_, gamePath) => {
     }
 });
 
+
+ipcMain.handle('shutdown-pc', () => {
+    spawn('shutdown', ['/s', '/t', '0'], {
+        detached: true,
+        stdio: 'ignore'
+    }).unref();
+
+    return { success: true };
+});
+
+ipcMain.handle('restart-pc', () => {
+    spawn('shutdown', ['/r', '/t', '0'], {
+        detached: true,
+        stdio: 'ignore'
+    }).unref();
+
+    return { success: true };
+});
+
+
 app.whenReady().then(() => {
-    app.setLoginItemSettings({
-        openAtLogin: true,
-        openAsHidden: false
-    });
+    // Solo registrar el inicio automático si la app está empaquetada
+    if (app.isPackaged) {
+        app.setLoginItemSettings({
+            openAtLogin: true,
+            path: app.getPath('exe') // Esto le dice a Windows que abra el .exe instalado, no el de desarrollo
+        });
+    }
 });
 
 app.whenReady().then(createWindow);

@@ -4,7 +4,7 @@
   "description": "It allows you to view installed games and run them.",
   "main": "./src/index.js",
   "scripts": {
-    "start": "electron ./src/",
+    "start": "electron .",
     "build": "electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -32,10 +32,10 @@
       "icon": "icon.ico"
     },
     "files": [
-      "**/*",
+      "package.json",
       "src/**/*",
-      "view/**/*",
-      "package.json"
-    ]
+      "view/**/*"
+    ],
+    "asar": true
   }
 }
