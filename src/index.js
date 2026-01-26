@@ -41,4 +41,11 @@ ipcMain.handle('execute-game', (_, gamePath) => {
     }
 });
 
+app.whenReady().then(() => {
+    app.setLoginItemSettings({
+        openAtLogin: true,
+        openAsHidden: false
+    });
+});
+
 app.whenReady().then(createWindow);
