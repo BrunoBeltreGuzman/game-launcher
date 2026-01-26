@@ -7,14 +7,14 @@ function createWindow() {
     const win = new BrowserWindow({
         width: 1000,
         height: 800,
-        fullscreen: true,      // pantalla completa
-        autoHideMenuBar: true, // oculta menú
+        fullscreen: true,
+        autoHideMenuBar: true,
         webPreferences: {
             preload: path.join(__dirname, './core/preload.js'),
             contextIsolation: true,
             nodeIntegration: false,
             sandbox: false,
-            webSecurity: true, // Mantén esto en true
+            webSecurity: true,
             allowRunningInsecureContent: false,
         }
     });

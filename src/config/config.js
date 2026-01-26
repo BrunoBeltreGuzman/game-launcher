@@ -4,14 +4,14 @@ module.exports = {
         'C:\\Users\\Public\\Desktop'
     ],
     gameExtensions: ['lnk', 'url', 'exe'],
-    isDev: false,
+    isDev: true,
     sound: {
         startSound: true,
         moveSound: true,
         playSound: true
     },
     igdb: {
-        clientId: "",
-        accessToken: ""
+        clientId: "ywwhqisuzjd0xycj7ad1sj12jp74ti",
+        accessToken: "y4b4i1n9y0jxtmgsrw47u2jm04pav3"
     }
 };

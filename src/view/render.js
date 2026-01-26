@@ -1,41 +1,15 @@
 const MOVE_DELAY = 200;
-const SELECT_GAME_DELAY = 3000;
+const SELECT_GAME_DELAY = 5000;
+const SOUND_PATH_PLAY = './sound/play.wav';
+const SOUND_PATH_SYSTEM = './sound/system.mp3';
+const SOUND_PATH_MOVE = './sound/move.wav';
+
 let isPlay = false;
 let gamepadIndex = null;
 let lastMove = 0;
 let selectedIndex = 0;
 
 const cards = () => document.querySelectorAll('.card');
-
-function normalizeGameName(name) {
-    name = name.split('.')[0];
-    return name;
-}
-
-function selectURL(urls) {
-    urls = urls.sort((a, b) => b.name - a.name);
-    urls = urls.sort((a, b) => b.game_type + a.game_type);
-    return urls[0].cover.image_id
-}
-
-async function getImagen(gameName) {
-    try {
-        const data = await fetch(`https://api.igdb.com/v4/games`, {
-            method: 'POST',
-            headers: {
-                'Client-ID': window.api.config.igdb.clientId,
-                "Authorization": "Bearer " + window.api.config.igdb.accessToken,
-                'Content-Type': 'text/plain'
-            },
-            body: `search "${normalizeGameName(gameName)}";\nfields name, cover.url, cover.image_id, game_type;`
-        });
-        let json = await data.json()
-        const url = selectURL(json);
-        return `https://images.igdb.com/igdb/image/upload/t_1080p/${url}.jpg`;
-    } catch (error) {
-        console.error(error);
-    }
-}
 
 function executeGame(gamePath) {
     window.api.executeGame(gamePath).then(res => {
@@ -47,57 +21,65 @@ function executeGame(gamePath) {
 }
 
 function playSound(src, volume = 1.0) {
-    switch (src.split("/")[2]) {
-        case "system.mp3":
-            if (!window.api.config.sound.startSound) return;
-            break;
-        case "move.wav":
-            if (!window.api.config.sound.moveSound) return;
-            break;
-        case "play.wav":
-            if (!window.api.config.sound.playSound) return;
-            break;
-        default:
-            break;
-    }
-
+    const soundConfig = window.api.config.sound;
+    if (src === SOUND_PATH_SYSTEM && !soundConfig.startSound) return;
+    if (src === SOUND_PATH_MOVE && !soundConfig.moveSound) return;
+    if (src === SOUND_PATH_PLAY && !soundConfig.playSound) return;
     const audio = new Audio(src);
     audio.volume = volume;
     audio.play().catch(() => { });
 }
 
 async function renderGames() {
-    const localGames = window.data.getLocalGames();
     const container = document.getElementById('container');
+    container.innerHTML = "<p>Cargando juegos, por favor espere...</p>";
+    const localGames = await window.data.getLocalGames();
+    container.innerHTML = '';
 
     if (localGames.length === 0) {
         container.innerHTML = "<p>No se encontraron juegos.</p>";
         return;
     }
 
+    const fragment = document.createDocumentFragment();
     for (const game of localGames) {
-        const imageUrl = await getImagen(game.name);
+        const imageUrl = game.imagePath;
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
-            <img src="${imageUrl}" alt="${game.name}">
+            <img src="${imageUrl}" alt="${game.localName}">
         `;
-        card.addEventListener('click', () => {
-            executeGame(game.gamePath);
+        card.addEventListener('click', async () => {
+            if (isPlay) return;
+            isPlay = true;
+            lastMove = Date.now();
+            selectedIndex = 0;
+            executeGame(game.path);
+            window.api.updateGameLastUse(game.localName);
+            playSound(SOUND_PATH_PLAY);
+            setTimeout(async () => {
+                isPlay = false;
+                await renderGames();
+                refreshListView();
+            }, SELECT_GAME_DELAY);
         });
-        container.appendChild(card);
+        fragment.appendChild(card);
     }
+    container.appendChild(fragment);
+    refreshListView();
 }
 
 renderGames();
-playSound('./sound/system.mp3');
+playSound(SOUND_PATH_SYSTEM);
 
 window.addEventListener("gamepadconnected", (e) => {
     gamepadIndex = e.gamepad.index;
+    refreshListView();
 });
 
 window.addEventListener("gamepaddisconnected", () => {
     gamepadIndex = null;
+    refreshListView();
 });
 
 function gamepadLoop() {
@@ -125,23 +107,15 @@ function handleGamepad(gp) {
 
     const cols = getColumns();
 
-    // Horizontal
+    // Axes
     if (gp.axes[0] > 0.5) moveSelection(1);
     if (gp.axes[0] < -0.5) moveSelection(-1);
-
-    // Vertical exacto en línea
     if (gp.axes[1] > 0.5) moveSelection(cols);
     if (gp.axes[1] < -0.5) moveSelection(-cols);
 
     // A
-    if (gp.buttons[0].pressed && !isPlay) {
-        isPlay = !isPlay;
-        playSound('./sound/play.wav');
+    if (gp.buttons[0].pressed) {
         cards()[selectedIndex]?.click();
-        lastMove = now;
-        setTimeout(() => {
-            isPlay = false;
-        }, SELECT_GAME_DELAY);
     }
 
     // D-Pad
@@ -151,6 +125,18 @@ function handleGamepad(gp) {
     if (gp.buttons[12].pressed) moveSelection(-cols);
 }
 
+window.addEventListener("keydown", (e) => {
+    switch (e.key) {
+        case "Tab":
+            moveSelection(1);
+            break;
+        case "Enter":
+            cards()[selectedIndex]?.click();
+            break;
+        default:
+            break;
+    }
+});
 
 function moveSelection(step) {
     const list = cards();
@@ -160,4 +146,12 @@ function moveSelection(step) {
     list[selectedIndex].scrollIntoView({ behavior: "smooth", block: "center" });
     lastMove = Date.now();
     playSound('./sound/move.wav');
+}
+
+
+function refreshListView() {
+    const list = cards();
+    list.forEach(c => c.classList.remove('active'));
+    if (list[selectedIndex]) list[selectedIndex].classList.add('active');
+    window.scrollTo(0, 0);
 }
