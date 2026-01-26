@@ -1,0 +1,41 @@
+{
+  "name": "game-launcher",
+  "version": "1.0.0",
+  "description": "It allows you to view installed games and run them.",
+  "main": "./src/index.js",
+  "scripts": {
+    "start": "electron ./src/",
+    "build": "electron-builder",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BrunoBeltreGuzman/game-launcher.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/BrunoBeltreGuzman/game-launcher/issues"
+  },
+  "homepage": "https://github.com/BrunoBeltreGuzman/game-launcher#readme",
+  "devDependencies": {
+    "electron": "^40.0.0",
+    "electron-builder": "^26.4.0"
+  },
+  "build": {
+    "appId": "com.bruno.gamelauncher",
+    "productName": "GameLauncher",
+    "win": {
+      "target": "nsis",
+      "icon": "icon.ico"
+    },
+    "files": [
+      "**/*",
+      "src/**/*",
+      "view/**/*",
+      "package.json"
+    ]
+  }
+}
