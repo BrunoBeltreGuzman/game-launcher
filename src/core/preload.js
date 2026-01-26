@@ -3,12 +3,11 @@ const fs = require('fs');
 const path = require('path');
 const { gamePaths, gameExtensions } = require('../config/config');
 const config = require('../config/config');
-const { getByLocalNameAndPath, saveAll, getAll, save, updateGameByLocalName, getGameByLocalName } = require('../data/service');
+const { getByLocalNameAndPath, saveAll, updateGameByLocalName, getGameByLocalName } = require('../data/service');
 
 contextBridge.exposeInMainWorld('data', {
     getLocalGames: async () => {
         let games = [];
-        const gamesDB = getAll();
         const filtroExtensiones = new RegExp(`\\.(${gameExtensions.join('|')})$`, 'i');
 
         for (const gamePath of gamePaths) {
@@ -35,7 +34,6 @@ contextBridge.exposeInMainWorld('data', {
                                 lastUse: null
                             }
                             games.push(newGame);
-                            gamesDB.push(newGame)
                         }
                     }
                 } catch (e) {
@@ -48,7 +46,7 @@ contextBridge.exposeInMainWorld('data', {
             const bTime = b.lastUse ? new Date(b.lastUse).getTime() : 0;
             return bTime - aTime;
         });
-        saveAll(gamesDB);
+        saveAll(games);
         return games;
     }
 });
