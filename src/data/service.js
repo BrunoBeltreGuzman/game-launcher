@@ -1,7 +1,7 @@
+const { app } = require('electron');
 const fs = require('fs');
 const path = require('path');
-
-const filePath = path.join(process.cwd(), 'data/gamesDB.json');
+const filePath = path.join(app.getPath('userData'), 'data', 'gamesDB.json');
 
 function readDB() {
     if (!fs.existsSync(path.dirname(filePath))) {

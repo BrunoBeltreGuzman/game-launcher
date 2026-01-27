@@ -1,7 +1,9 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const { spawn } = require('child_process');
 const { isDev } = require('./config/config');
+const { restartPC, shutdownPC, executeGame } = require('./core/controller');
+const { getLocalGames, updateGameLastUse } = require('./core/games');
+const fs = require('fs');
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -10,7 +12,7 @@ function createWindow() {
         fullscreen: true,
         autoHideMenuBar: true,
         webPreferences: {
-            preload: path.join(__dirname, './core/preload.js'),
+            preload: path.join(__dirname, 'core', 'preload.js'),
             contextIsolation: true,
             nodeIntegration: false,
             sandbox: false,
@@ -20,55 +22,36 @@ function createWindow() {
     });
 
     win.loadFile(path.join(__dirname, 'view', 'index.html'));
-    if (isDev) win.webContents.openDevTools();
+    if (isDev) {
+        win.webContents.openDevTools();
+        const userData = app.getPath('userData');
+        const foldersToClear = ['cache', 'data'];
+        foldersToClear.forEach(folder => {
+            const fullPath = path.join(userData, folder);
+            fs.rmSync(fullPath, { recursive: true, force: true });
+        });
+    }
 }
 
-ipcMain.handle('execute-game', (_, gamePath) => {
-    try {
-        spawn('cmd.exe', [
-            '/c',
-            'start',
-            '""',
-            gamePath
-        ], {
-            detached: true,
-            stdio: 'ignore'
-        }).unref();
-        return { success: true };
-    } catch (e) {
-        console.error(e);
-        return { success: false, error: e.message };
-    }
-});
-
-
-ipcMain.handle('shutdown-pc', () => {
-    spawn('shutdown', ['/s', '/t', '0'], {
-        detached: true,
-        stdio: 'ignore'
-    }).unref();
-
-    return { success: true };
-});
-
-ipcMain.handle('restart-pc', () => {
-    spawn('shutdown', ['/r', '/t', '0'], {
-        detached: true,
-        stdio: 'ignore'
-    }).unref();
-
-    return { success: true };
-});
-
+ipcMain.handle('execute-game', (_, gamePath) => executeGame(gamePath));
+ipcMain.handle('shutdown-pc', shutdownPC);
+ipcMain.handle('restart-pc', restartPC);
+ipcMain.handle('get-local-games', getLocalGames);
+ipcMain.handle('update-game-last-use', (_, localGame) => updateGameLastUse(localGame));
 
 app.whenReady().then(() => {
-    // Solo registrar el inicio automático si la app está empaquetada
     if (app.isPackaged) {
         app.setLoginItemSettings({
             openAtLogin: true,
-            path: app.getPath('exe') // Esto le dice a Windows que abra el .exe instalado, no el de desarrollo
+            path: app.getPath('exe')
         });
     }
 });
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+    try {
+        createWindow();
+    } catch (error) {
+        console.error(error);
+    }
+});

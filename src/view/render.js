@@ -40,7 +40,9 @@ function playSound(src, volume = 1.0) {
 async function renderGames() {
     const container = document.getElementById('container');
     container.innerHTML = "<p>Cargando juegos, por favor espere...</p>";
-    const localGames = await window.data.getLocalGames();
+    const localGames = await window.api.getLocalGames();
+    if (window.api.config.isDev) console.log(localGames);
+    
     container.innerHTML = '';
 
     if (localGames.length === 0) {
