@@ -6,7 +6,7 @@ TODO:
 - List games by recen use ✅
 - Select game corver 
 - Rename game
-- Config app
+- Config app ✅
 
 ## Screenshots
 

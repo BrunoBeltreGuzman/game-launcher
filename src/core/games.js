@@ -1,8 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-const { gamePaths, gameExtensions } = require('../config/config');
-const { getByLocalNameAndPath, saveAll, getGameByLocalName, updateGameByLocalName } = require('../data/service');
+const { getByLocalNameAndPath, saveAll, getGameByLocalName, updateGameByLocalName } = require('../data/gamesDB');
 const { getImage } = require('./util');
+const { getConfig } = require('../data/configDB');
+const { gamePaths, gameExtensions } = getConfig();
 
 async function getLocalGames() {
     let games = [];
@@ -48,8 +49,11 @@ async function getLocalGames() {
 }
 
 
-function updateGameLastUse(localName) {
+function updateGameLastUse(_, localName) {
+    console.log(localName);
     const game = getGameByLocalName(localName);
+    console.log(game);
+    
     game.lastUse = new Date();
     updateGameByLocalName(game);
     return game;

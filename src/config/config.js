@@ -1,12 +1,12 @@
 module.exports = {
     gamePaths: [
-        'C:\\Users\\Admin\\Desktop',
-        'C:\\Users\\Public\\Desktop',
+        'C:/Users/Admin/Desktop',
+        'C:/Users/Public/Desktop',
     ],
     gameExtensions: ['lnk', 'url', 'exe'],
     dev: {
         isDev: false,
-        removeLocalGames: false
+        removeLocalData: false
     },
     sound: {
         startSound: true,
@@ -14,7 +14,7 @@ module.exports = {
         playSound: true
     },
     igdb: {
-        clientId: "",
-        accessToken: ""
+        clientId: "ywwhqisuzjd0xycj7ad1sj12jp74ti",
+        accessToken: "y4b4i1n9y0jxtmgsrw47u2jm04pav3"
     }
 };

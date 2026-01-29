@@ -1,0 +1,69 @@
+details {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+summary {
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    list-style: none; /* Quita la flecha por defecto en algunos navegadores */
+}
+
+/* Añadir una flecha personalizada o indicador */
+summary::before {
+    content: "▶ ";
+    color: #505050;
+}
+
+details[open] summary::before {
+    content: "▼ ";
+    color: #000000;
+}
+
+.content {
+    margin-top: 10px;
+    padding-left: 15px;
+}
+
+.action-area {
+    margin-top: auto;
+    display: flex;
+    gap: 15px; /* Espacio entre botones */
+}
+
+.btn {
+    flex: 1; /* Para que ambos tengan el mismo tamaño */
+    max-width: 200px;
+    height: 45px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+}
+
+/* Botón Guardar (Verde) */
+.btn-save {
+    background-color: #28a745;
+    color: white;
+}
+
+/* Botón Descartar (Rojo) */
+.btn-discard {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Efectos de interacción */
+.btn:hover {
+    opacity: 0.9;
+}
+
+.btn:active {
+    transform: scale(0.98); /* Efecto de pulsado */
+}

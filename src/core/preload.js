@@ -1,5 +1,4 @@
 const { contextBridge, ipcRenderer } = require('electron');
-const config = require('../config/config');
 
 contextBridge.exposeInMainWorld('api', {
     executeGame: (gamePath) => {
@@ -17,5 +16,13 @@ contextBridge.exposeInMainWorld('api', {
     restartPc: () => {
         return ipcRenderer.invoke('restart-pc');
     },
-    config: config
+    openSettingsWindow: () => {
+        return ipcRenderer.invoke('open-settings-window');
+    },
+    getConfig: () => {
+        return ipcRenderer.invoke('get-config');
+    },
+    saveConfig: (config) => {
+        return ipcRenderer.invoke('save-config', config);
+    }
 });

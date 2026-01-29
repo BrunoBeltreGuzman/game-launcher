@@ -1,6 +1,6 @@
 const { spawn } = require('child_process');
 
-function executeGame(gamePath) {
+function executeGame(_, gamePath) {
     try {
         spawn('cmd.exe', [
             '/c',

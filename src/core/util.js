@@ -2,7 +2,8 @@ const { app } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const cachePath = path.join(app.getPath('userData'), 'cache');
-const config = require('../config/config');
+const { getConfig } = require('../data/configDB');
+const config = getConfig();
 
 function normalizeGameName(name) {
     name = name.split('.')[0];

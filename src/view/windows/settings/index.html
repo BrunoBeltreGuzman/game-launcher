@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Settings - Game Launcher</title>
+</head>
+
+<body>
+    <h1>Settings</h1>
+
+    <details class="custom-accordion">
+        <summary>General</summary>
+        <div class="content">
+           <textarea name="config" id="config" cols="30" rows="30" style="width: 100%;"></textarea>
+        </div>
+    </details>
+
+    <details class="custom-accordion">
+        <summary>Default controls</summary>
+        <div class="content">
+            <img src="./controls.png" alt="">
+        </div>
+    </details>
+
+    <section class="action-area">
+        <button id="btnDiscard" class="btn btn-discard">Discard changes</button>
+        <button id="btnSave" class="btn btn-save">Save changes</button>
+    </section>
+
+
+
+    <script src="render.js" type="module"></script>
+</body>
+
+</html>
