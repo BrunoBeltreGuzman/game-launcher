@@ -1,9 +1,9 @@
+import { executeGame, getLocalGames, updateGameLastUse } from "./util/games.js";
+import { playSound, SOUND } from "./util/sound.js";
+
 const MOVE_DELAY = 200;
 const HOLD_TIME = 1500;
 const SELECT_GAME_DELAY = 5000;
-const SOUND_PATH_PLAY = './sound/play.wav';
-const SOUND_PATH_SYSTEM = './sound/system.mp3';
-const SOUND_PATH_MOVE = './sound/move.wav';
 
 let isPlay = false;
 let gamepadIndex = null;
@@ -18,30 +18,11 @@ let closeDone = false;
 
 const cards = () => document.querySelectorAll('.card');
 
-function executeGame(gamePath) {
-    window.api.executeGame(gamePath).then(res => {
-        if (!res.success) {
-            alert("No se pudo lanzar el juego");
-            console.error(res.error);
-        }
-    });
-}
-
-function playSound(src, volume = 1.0) {
-    const soundConfig = window.api.config.sound;
-    if (src === SOUND_PATH_SYSTEM && !soundConfig.startSound) return;
-    if (src === SOUND_PATH_MOVE && !soundConfig.moveSound) return;
-    if (src === SOUND_PATH_PLAY && !soundConfig.playSound) return;
-    const audio = new Audio(src);
-    audio.volume = volume;
-    audio.play().catch(() => { });
-}
-
 async function renderGames() {
     const container = document.getElementById('container');
     container.innerHTML = "<p>Cargando juegos, por favor espere...</p>";
-    const localGames = await window.api.getLocalGames();
-    if (window.api.config.isDev) console.log(localGames);
+    const localGames = await getLocalGames();
+    if (window.api.config.dev.isDev) console.log(localGames);
     
     container.innerHTML = '';
 
@@ -56,7 +37,7 @@ async function renderGames() {
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
-            <img src="${imageUrl}" alt="${game.localName}">
+            <img src="${imageUrl}" class="card-image" alt="${game.localName}">
         `;
         card.addEventListener('click', async () => {
             if (isPlay) return;
@@ -64,8 +45,8 @@ async function renderGames() {
             lastMove = Date.now();
             selectedIndex = 0;
             executeGame(game.path);
-            window.api.updateGameLastUse(game.localName);
-            playSound(SOUND_PATH_PLAY);
+            updateGameLastUse(game.localName);
+            playSound(SOUND.PLAY);
             setTimeout(async () => {
                 isPlay = false;
                 await renderGames();
@@ -77,9 +58,6 @@ async function renderGames() {
     container.appendChild(fragment);
     refreshListView();
 }
-
-renderGames();
-playSound(SOUND_PATH_SYSTEM);
 
 window.addEventListener("gamepadconnected", (e) => {
     gamepadIndex = e.gamepad.index;
@@ -173,8 +151,6 @@ function handleGamepad(gp) {
     if (gp.buttons[12].pressed) moveSelection(-cols);
 }
 
-
-
 window.addEventListener("keydown", (e) => {
     switch (e.key) {
         case "Tab":
@@ -195,9 +171,8 @@ function moveSelection(step) {
     list[selectedIndex].classList.add('active');
     list[selectedIndex].scrollIntoView({ behavior: "smooth", block: "center" });
     lastMove = Date.now();
-    playSound('./sound/move.wav');
+    playSound(SOUND.MOVE);
 }
-
 
 function refreshListView() {
     const list = cards();
@@ -205,3 +180,6 @@ function refreshListView() {
     if (list[selectedIndex]) list[selectedIndex].classList.add('active');
     window.scrollTo(0, 0);
 }
+
+renderGames();
+playSound(SOUND.SYSTEM);

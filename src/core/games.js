@@ -22,11 +22,12 @@ async function getLocalGames() {
                         }
                         games.push(gameDb);
                     } else {
+                        const imgPath = await getImage(name);
                         const newGame = {
                             localName: name,
                             searchName: name,
                             path: fullPath,
-                            imagePath: await getImage(name),
+                            imagePath: imgPath,
                             lastUse: new Date()
                         }
                         games.push(newGame);

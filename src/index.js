@@ -1,34 +1,36 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, screen } = require('electron');
 const path = require('path');
-const { isDev } = require('./config/config');
+const { dev } = require('./config/config');
 const { restartPC, shutdownPC, executeGame } = require('./core/controller');
 const { getLocalGames, updateGameLastUse } = require('./core/games');
 const fs = require('fs');
 
 function createWindow() {
+
     const win = new BrowserWindow({
-        width: 1000,
-        height: 800,
+        width: screen.getPrimaryDisplay().workAreaSize.width,
+        height: screen.getPrimaryDisplay().workAreaSize.height,
         fullscreen: true,
         autoHideMenuBar: true,
+        simpleFullscreen: true,
         webPreferences: {
             preload: path.join(__dirname, 'core', 'preload.js'),
-            contextIsolation: true,
-            nodeIntegration: false,
             sandbox: false,
             webSecurity: true,
             allowRunningInsecureContent: false,
+            nodeIntegration: false,
+            contextIsolation: true,
         }
     });
 
     win.loadFile(path.join(__dirname, 'view', 'index.html'));
-    if (isDev) {
+    if (dev.isDev) {
         win.webContents.openDevTools();
         const userData = app.getPath('userData');
         const foldersToClear = ['cache', 'data'];
         foldersToClear.forEach(folder => {
             const fullPath = path.join(userData, folder);
-            fs.rmSync(fullPath, { recursive: true, force: true });
+            if (dev.removeLocalGames) fs.rmSync(fullPath, { recursive: true, force: true });
         });
     }
 }

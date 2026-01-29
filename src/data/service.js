@@ -3,7 +3,10 @@ const fs = require('fs');
 const path = require('path');
 const filePath = path.join(app.getPath('userData'), 'data', 'gamesDB.json');
 
+let data = null;
+
 function readDB() {
+    if (data) return data;
     if (!fs.existsSync(path.dirname(filePath))) {
         fs.mkdirSync(path.dirname(filePath), { recursive: true });
     }
@@ -11,7 +14,8 @@ function readDB() {
         fs.writeFileSync(filePath, JSON.stringify([], null, 2));
     }
     const raw = fs.readFileSync(filePath, 'utf-8');
-    return JSON.parse(raw);
+    data = JSON.parse(raw);
+    return data;
 }
 
 function saveAll(data) {
