@@ -7,7 +7,7 @@ export function executeGame(gamePath) {
     });
 }
 
-export function updateGameLastUse() {
+export function updateGameLastUse(localName) {
     return window.api.updateGameLastUse(localName);
 }
 
