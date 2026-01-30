@@ -21,9 +21,7 @@ function createAppWindow() {
             nodeIntegration: false,
             contextIsolation: true,
         }
-    });
-    console.log(app.getPath('userData'));
-    
+    });    
     win.loadFile(path.join(__dirname, 'view', 'windows', 'app', 'index.html'));
     if (config.dev.isDev) {
         win.webContents.openDevTools();

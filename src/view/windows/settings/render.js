@@ -11,7 +11,7 @@ btnSave.addEventListener("click", async () => {
             alert("Settings not saved!");
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         alert("Error saving settings!");
     }
     await loadConfig();

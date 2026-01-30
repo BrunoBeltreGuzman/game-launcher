@@ -50,10 +50,7 @@ async function getLocalGames() {
 
 
 function updateGameLastUse(_, localName) {
-    console.log(localName);
-    const game = getGameByLocalName(localName);
-    console.log(game);
-    
+    const game = getGameByLocalName(localName);    
     game.lastUse = new Date();
     updateGameByLocalName(game);
     return game;

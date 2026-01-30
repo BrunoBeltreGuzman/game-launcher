@@ -61,7 +61,6 @@ async function renderGames() {
     }
     container.appendChild(fragment);
     refreshListView();
-    playSound(SOUND.SYSTEM, config);
 }
 
 window.addEventListener("gamepadconnected", (e) => {
@@ -168,7 +167,8 @@ function handleGamepad(gp) {
 }
 
 window.addEventListener("keydown", (e) => {
-    switch (e.key) {
+    const key = e.key;
+    switch (key) {
         case "Tab": // Tab key move
             moveSelection(1);
             break;
@@ -181,6 +181,13 @@ window.addEventListener("keydown", (e) => {
         default:
             break;
     }
+
+    const cols = getColumns();
+
+    if (key === "d") moveSelection(1);
+    if (key === "a") moveSelection(-1);
+    if (key === "s") moveSelection(cols);
+    if (key === "w") moveSelection(-cols);
 });
 
 function moveSelection(step) {
@@ -200,4 +207,4 @@ function refreshListView() {
     window.scrollTo(0, 0);
 }
 
-renderGames();
+renderGames().then(() => playSound(SOUND.SYSTEM, config));
