@@ -1,7 +1,7 @@
 export const SOUND = {
-    PLAY: '../../sound/play.wav',
-    SYSTEM: '../../sound/system.mp3',
-    MOVE: '../../sound/move.wav'
+    PLAY: './sound/play.wav',
+    SYSTEM: './sound/system.mp3',
+    MOVE: './sound/move.wav'
 }
 
 export function playSound(src, config, volume = 1.0) {

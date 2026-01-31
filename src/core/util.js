@@ -21,7 +21,12 @@ async function getImage(gameName) {
             },
             body: `search "${normalizeGameName(gameName)}";\nfields name, cover.url, cover.image_id, game_type;`
         });
-        const json = await data.json()
+        const json = await data.json();
+        if (json && json.length) {
+            json.sort((a, b) => {
+                return a.game_type - b.game_type;
+            });
+        }
         const gameWithCover = json.find(game => game?.cover?.image_id);
         const imageId = gameWithCover?.cover?.image_id;
         const imageUrl = `https://images.igdb.com/igdb/image/upload/t_1080p/${imageId}.jpg`;
