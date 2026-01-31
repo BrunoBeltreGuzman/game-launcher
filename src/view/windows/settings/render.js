@@ -19,6 +19,7 @@ btnSave.addEventListener("click", async () => {
 
 btnDiscard.addEventListener("click", async () => {
     await loadConfig();
+    window.close();
 });
 
 async function loadConfig() {
