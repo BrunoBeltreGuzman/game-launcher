@@ -4,6 +4,14 @@ const preConfig = document.getElementById("config");
 
 btnSave.addEventListener("click", async () => {
     try {
+        JSON.parse(preConfig.value);
+    } catch (error) {
+        console.error(error);
+        alert("Invalid JSON!");
+        return;
+    }
+
+    try {
         const save = await window.api.saveConfig(preConfig.value);
         if (save) {
             alert("Settings saved!");
