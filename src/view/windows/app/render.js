@@ -14,7 +14,6 @@ let xPressedAt = null;
 let yPressedAt = null;
 let shutdownDone = false;
 let restartDone = false;
-let closeDone = false;
 let settingsWindowOpened = false;
 let config = null;
 
@@ -26,7 +25,9 @@ async function renderGames() {
     const localGames = await getLocalGames();
     config = await window.api.getConfig();
 
-    if (config.dev.isDev) console.log(localGames);
+    if (config.dev.isDev) {
+        console.log(localGames);
+    }
 
     container.innerHTML = '';
 
@@ -51,7 +52,9 @@ async function renderGames() {
             executeGame(game.path);
             updateGameLastUse(game.localName);
             playSound(SOUND.PLAY, config);
-            if (config.system.whenOpenGameCloseApp) window.close();
+            if (config.system.whenOpenGameCloseApp) {
+                window.close();
+            }
             setTimeout(async () => {
                 isPlay = false;
                 await renderGames();
@@ -77,7 +80,9 @@ window.addEventListener("gamepaddisconnected", () => {
 function gamepadLoop() {
     if (gamepadIndex !== null) {
         const gp = navigator.getGamepads()[gamepadIndex];
-        if (gp) handleGamepad(gp);
+        if (gp) {
+            handleGamepad(gp);
+        }
     }
     requestAnimationFrame(gamepadLoop);
 }
@@ -92,6 +97,7 @@ function getColumns() {
     const cardWidth = card.clientWidth;
     return Math.round(containerWidth / cardWidth);
 }
+
 function handleGamepad(gp) {
     const now = Date.now();
     if (now - lastMove < MOVE_DELAY) return;
@@ -112,7 +118,6 @@ function handleGamepad(gp) {
     // O/B pressed long shutdown pc
     if (gp.buttons[1].pressed) {
         if (!bPressedAt) bPressedAt = now;
-
         if (now - bPressedAt > HOLD_TIME && !shutdownDone) {
             shutdownDone = true;
             window.api.shutdownPc();
@@ -125,7 +130,6 @@ function handleGamepad(gp) {
     // cuadrado/X pressed long restart pc
     if (gp.buttons[2].pressed) {
         if (!xPressedAt) xPressedAt = now;
-
         if (now - xPressedAt > HOLD_TIME && !restartDone) {
             restartDone = true;
             window.api.restartPc();
@@ -138,7 +142,6 @@ function handleGamepad(gp) {
     // triangulo/Y pressed long close app
     if (gp.buttons[3].pressed) {
         if (!yPressedAt) yPressedAt = now;
-
         if (now - yPressedAt > HOLD_TIME && !restartDone) {
             restartDone = true;
             window.close();
@@ -159,7 +162,6 @@ function handleGamepad(gp) {
         settingsWindowOpened = false;
     }
 
-
     // D-Pad move
     if (gp.buttons[15].pressed) moveSelection(1);
     if (gp.buttons[14].pressed) moveSelection(-1);
@@ -168,19 +170,17 @@ function handleGamepad(gp) {
 }
 
 window.addEventListener("keydown", (e) => {
-    const key = e.key;
+    const key = e.key.toLowerCase();
     switch (key) {
-        case "Tab": // Tab key move
+        case "tab": // Tab key move
             moveSelection(1);
-            break;
-        case "Enter": // Enter key start game
+            return;
+        case "enter": // Enter key start game
             cards()[selectedIndex]?.click();
-            break;
-        case "Escape": // Esc key open settings window
+            return;
+        case "escape": // Esc key open settings window
             window.api.openSettingsWindow();
-            break;
-        default:
-            break;
+            return;
     }
 
     const cols = getColumns();

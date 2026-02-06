@@ -3,7 +3,7 @@ It allows you to view installed games and run them.
 
 TODO:
 - Cache images ✅
-- List games by recen use ✅
+- List games by recent use ✅
 - Select game corver 
 - Rename game
 - Config app ✅
