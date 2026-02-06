@@ -1,4 +1,7 @@
 module.exports = {
+    system: {
+        whenOpenGameCloseApp: false
+    },
     gamePaths: [
         'C:/Users/Admin/Desktop',
         'C:/Users/Public/Desktop',

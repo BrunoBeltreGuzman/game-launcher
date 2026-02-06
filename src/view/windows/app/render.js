@@ -51,6 +51,7 @@ async function renderGames() {
             executeGame(game.path);
             updateGameLastUse(game.localName);
             playSound(SOUND.PLAY, config);
+            if (config.system.whenOpenGameCloseApp) window.close();
             setTimeout(async () => {
                 isPlay = false;
                 await renderGames();
