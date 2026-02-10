@@ -3,12 +3,12 @@ const path = require('path');
 const { getByLocalNameAndPath, saveAll, getGameByLocalName, updateGameByLocalName } = require('../data/gamesDB');
 const { getImage } = require('./util');
 const { getConfig } = require('../data/configDB');
-const { gamePaths, gameExtensions } = getConfig();
+const config = getConfig();
 
 async function getLocalGames() {
     let games = [];
-    const filtroExtensiones = new RegExp(`\\.(${gameExtensions.join('|')})$`, 'i');
-    for (const gamePath of gamePaths) {
+    const filtroExtensiones = new RegExp(`\\.(${config.supportedGameExtensions.join('|')})$`, 'i');
+    for (const gamePath of config.gameScanPaths) {
         if (!fs.existsSync(gamePath)) continue;
         for (const gameName of fs.readdirSync(gamePath)) {
             const fullPath = path.join(gamePath, gameName);

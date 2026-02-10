@@ -1,20 +1,28 @@
 module.exports = {
     system: {
-        whenOpenGameCloseApp: false
+        closeAppOnGameLaunch: false
     },
-    gamePaths: [
-        'C:/Users/Admin/Desktop',
-        'C:/Users/Public/Desktop',
+    gameScanPaths: [
+        "C:/Users/Admin/Desktop",
+        "C:/Users/Public/Desktop"
     ],
-    gameExtensions: ['lnk', 'url', 'exe'],
-    dev: {
-        isDev: false,
-        removeLocalData: false
+    supportedGameExtensions: [
+        "lnk",
+        "url",
+        "exe"
+    ],
+    development: {
+        enabled: false,
+        clearLocalDataOnStart: false
     },
-    sound: {
-        startSound: true,
-        moveSound: true,
-        playSound: true
+    cleanupFolders: [
+        "cache",
+        "data"
+    ],
+    audio: {
+        enableStartupSound: true,
+        enableMoveSound: true,
+        enablePlaySound: true
     },
     igdb: {
         clientId: "ywwhqisuzjd0xycj7ad1sj12jp74ti",

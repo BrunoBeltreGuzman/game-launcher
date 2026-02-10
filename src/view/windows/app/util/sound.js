@@ -5,10 +5,10 @@ export const SOUND = {
 }
 
 export function playSound(src, config, volume = 1.0) {
-    const soundConfig = config.sound;
-    if (src === SOUND.SYSTEM && !soundConfig.startSound) return;
-    if (src === SOUND.MOVE && !soundConfig.moveSound) return;
-    if (src === SOUND.PLAY && !soundConfig.playSound) return;
+    const soundConfig = config.audio;
+    if (src === SOUND.SYSTEM && !soundConfig.enableStartupSound) return;
+    if (src === SOUND.MOVE && !soundConfig.enableMoveSound) return;
+    if (src === SOUND.PLAY && !soundConfig.enablePlaySound) return;
     const audio = new Audio(src);
     audio.volume = volume;
     audio.play().catch(() => { });

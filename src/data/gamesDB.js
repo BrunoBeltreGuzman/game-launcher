@@ -3,16 +3,26 @@ const fs = require('fs');
 const path = require('path');
 const filePath = path.join(app.getPath('userData'), 'data', 'gamesDB.json');
 
+let cache = null;
+
 function readDB() {
+    if (cache) return cache;
     if (!fs.existsSync(path.dirname(filePath))) {
         fs.mkdirSync(path.dirname(filePath), { recursive: true });
     }
     if (!fs.existsSync(filePath)) {
         fs.writeFileSync(filePath, JSON.stringify([], null, 2));
     }
-    const raw = fs.readFileSync(filePath, 'utf-8');
-    const data = JSON.parse(raw);
-    return data;
+    try {
+        const raw = fs.readFileSync(filePath, 'utf-8');
+        const data = JSON.parse(raw);
+        cache = data;
+        return data;
+    } catch (error) {
+        console.error(error);
+        fs.writeFileSync(filePath, JSON.stringify([], null, 2));
+        return readDB();
+    }
 }
 
 function saveAll(data) {
@@ -29,6 +39,7 @@ function updateGameByLocalName(game) {
     if (index !== -1) {
         data[index] = game;
         saveAll(data);
+        cache = data;
     }
     return game;
 }

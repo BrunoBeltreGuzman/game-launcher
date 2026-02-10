@@ -19,7 +19,7 @@ async function getImage(gameName) {
                 "Authorization": "Bearer " + config.igdb.accessToken,
                 'Content-Type': 'text/plain'
             },
-            body: `search "${normalizeGameName(gameName)}";\nfields name, cover.url, cover.image_id, game_type;`
+            body: `search "${normalizeGameName(gameName)}";\nfields cover.image_id, game_type;`
         });
         const json = await data.json();
         if (json && json.length) {
