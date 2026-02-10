@@ -4,7 +4,10 @@ const path = require('path');
 const filePath = path.join(app.getPath('userData'), 'data', 'config.json');
 const config = require('../config/config');
 
+let cache = null;
+
 function readDB() {
+    if (cache) return cache;
     if (!fs.existsSync(path.dirname(filePath))) {
         fs.mkdirSync(path.dirname(filePath), { recursive: true });
     }
@@ -14,6 +17,7 @@ function readDB() {
     try {
         const raw = fs.readFileSync(filePath, 'utf-8');
         const data = JSON.parse(raw);
+        cache = data;
         return data;
     } catch (error) {
         console.error(error);

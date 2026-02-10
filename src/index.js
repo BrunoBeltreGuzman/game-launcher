@@ -21,15 +21,14 @@ function createAppWindow() {
             nodeIntegration: false,
             contextIsolation: true,
         }
-    });    
+    });
     win.loadFile(path.join(__dirname, 'view', 'windows', 'app', 'index.html'));
-    if (config.dev.isDev) {
+    if (config.development.enabled) {
         win.webContents.openDevTools();
         const userData = app.getPath('userData');
-        const foldersToClear = ['cache', 'data'];
-        foldersToClear.forEach(folder => {
+        config.cleanupFolders.forEach(folder => {
             const fullPath = path.join(userData, folder);
-            if (config.dev.removeLocalData) fs.rmSync(fullPath, { recursive: true, force: true });
+            if (config.development.clearLocalDataOnStart) fs.rmSync(fullPath, { recursive: true, force: true });
         });
     }
 }
@@ -39,7 +38,6 @@ function createSettingsWindow() {
         width: 1200,
         height: 700,
         autoHideMenuBar: true,
-        simpleFullscreen: true,
         webPreferences: {
             preload: path.join(__dirname, 'core', 'preload.js'),
             sandbox: false,
@@ -52,12 +50,12 @@ function createSettingsWindow() {
 
     win.loadFile(path.join(__dirname, 'view', 'windows', 'settings', 'index.html'));
 
-    if (config.dev.isDev) {
+    if (config.development.enabled) {
         win.webContents.openDevTools();
     }
 }
 
-ipcMain.handle('execute-game', executeGame);
+ipcMain.handle('execute-game', executeGame)
 ipcMain.handle('shutdown-pc', shutdownPC);
 ipcMain.handle('restart-pc', restartPC);
 ipcMain.handle('get-local-games', getLocalGames);
@@ -73,9 +71,6 @@ app.whenReady().then(() => {
             path: app.getPath('exe')
         });
     }
-});
-
-app.whenReady().then(() => {
     try {
         createAppWindow();
     } catch (error) {

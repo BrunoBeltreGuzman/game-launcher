@@ -25,7 +25,7 @@ async function renderGames() {
     const localGames = await getLocalGames();
     config = await window.api.getConfig();
 
-    if (config.dev.isDev) {
+    if (config.development.enabled) {
         console.log(localGames);
     }
 
