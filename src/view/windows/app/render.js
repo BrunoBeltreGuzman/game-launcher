@@ -14,6 +14,7 @@ let xPressedAt = null;
 let yPressedAt = null;
 let shutdownDone = false;
 let restartDone = false;
+let closeDone = false;
 let settingsWindowOpened = false;
 let config = null;
 
@@ -142,8 +143,8 @@ function handleGamepad(gp) {
     // triangulo/Y pressed long close app
     if (gp.buttons[3].pressed) {
         if (!yPressedAt) yPressedAt = now;
-        if (now - yPressedAt > HOLD_TIME && !restartDone) {
-            restartDone = true;
+        if (now - yPressedAt > HOLD_TIME && !closeDone) {
+            closeDone = true;
             window.close();
         }
     } else {
