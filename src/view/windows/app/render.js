@@ -52,7 +52,7 @@ async function renderGames() {
             executeGame(game.path);
             updateGameLastUse(game.localName);
             playSound(SOUND.PLAY, config);
-            if (config.system.whenOpenGameCloseApp) {
+            if (config.system.closeAppOnGameLaunch) {
                 window.close();
             }
             setTimeout(async () => {
