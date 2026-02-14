@@ -11,6 +11,7 @@ function normalizeGameName(name) {
 }
 
 async function getImage(gameName) {
+    gameName = normalizeGameName(gameName);
     try {
         const data = await fetch(`https://api.igdb.com/v4/games`, {
             method: 'POST',
@@ -19,9 +20,12 @@ async function getImage(gameName) {
                 "Authorization": "Bearer " + config.igdb.accessToken,
                 'Content-Type': 'text/plain'
             },
-            body: `search "${normalizeGameName(gameName)}";\nfields cover.image_id, game_type;`
+            body: `search "${gameName}";\nfields cover.image_id, game_type;`
         });
         const json = await data.json();
+        if (!json || !json.length) {
+            return null;
+        }
         if (json && json.length) {
             json.sort((a, b) => {
                 return a.game_type - b.game_type;
@@ -29,6 +33,9 @@ async function getImage(gameName) {
         }
         const gameWithCover = json.find(game => game?.cover?.image_id);
         const imageId = gameWithCover?.cover?.image_id;
+        if (!imageId) {
+            return null;
+        }
         const imageUrl = `https://images.igdb.com/igdb/image/upload/t_1080p/${imageId}.jpg`;
         if (!fs.existsSync(cachePath)) {
             fs.mkdirSync(cachePath, { recursive: true });
@@ -46,7 +53,7 @@ async function getImage(gameName) {
         return filePath;
     } catch (error) {
         console.error(error);
-        return gameName;
+        return null;
     }
 }
 

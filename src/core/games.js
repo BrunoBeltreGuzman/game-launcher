@@ -18,12 +18,13 @@ async function getLocalGames() {
                     const name = gameName.replace(filtroExtensiones, '');
                     const gameDb = getByLocalNameAndPath(name, fullPath);
                     if (gameDb != null) {
-                        if (gameDb.imagePath == gameDb.localName || gameDb.imagePath.includes('undefined')) {
-                            gameDb.imagePath = await getImage(name);
-                        }
                         games.push(gameDb);
                     } else {
                         const imgPath = await getImage(name);
+                        if (!imgPath) {
+                            console.log(`No se pudo obtener la imagen de ${name}`);
+                            continue;
+                        }
                         const newGame = {
                             localName: name,
                             searchName: name,
