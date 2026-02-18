@@ -67,7 +67,7 @@ ipcMain.handle('save-config', saveConfig);
 app.whenReady().then(() => {
     if (app.isPackaged) {
         app.setLoginItemSettings({
-            openAtLogin: true,
+            openAtLogin: config.system.openAtWindowsStartup,
             path: app.getPath('exe')
         });
     }

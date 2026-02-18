@@ -1,5 +1,6 @@
 module.exports = {
     system: {
+        openAtWindowsStartup: true,
         closeAppOnGameLaunch: false
     },
     gameScanPaths: [
