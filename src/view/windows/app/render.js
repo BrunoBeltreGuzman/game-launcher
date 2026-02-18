@@ -25,18 +25,14 @@ async function renderGames() {
     container.innerHTML = "<p>Cargando juegos, por favor espere...</p>";
     const localGames = await getLocalGames();
     config = await window.api.getConfig();
-
     if (config.development.enabled) {
         console.log(localGames);
     }
-
     container.innerHTML = '';
-
     if (localGames.length === 0) {
         container.innerHTML = "<p>No se encontraron juegos.</p>";
         return;
     }
-
     const fragment = document.createDocumentFragment();
     for (const game of localGames) {
         const imageUrl = game.imagePath;
@@ -50,11 +46,13 @@ async function renderGames() {
             isPlay = true;
             lastMove = Date.now();
             selectedIndex = 0;
+            playSound(SOUND.PLAY, config);
             executeGame(game.path);
             updateGameLastUse(game.localName);
-            playSound(SOUND.PLAY, config);
             if (config.system.closeAppOnGameLaunch) {
-                window.close();
+                setTimeout(() => {
+                    window.close();
+                }, HOLD_TIME);
             }
             setTimeout(async () => {
                 isPlay = false;
@@ -110,6 +108,12 @@ function handleGamepad(gp) {
     if (gp.axes[0] < -0.5) moveSelection(-1);
     if (gp.axes[1] > 0.5) moveSelection(cols);
     if (gp.axes[1] < -0.5) moveSelection(-cols);
+    
+    // D-Pad move
+    if (gp.buttons[15].pressed) moveSelection(1);
+    if (gp.buttons[14].pressed) moveSelection(-1);
+    if (gp.buttons[13].pressed) moveSelection(cols);
+    if (gp.buttons[12].pressed) moveSelection(-cols);
 
     // X/A start game
     if (gp.buttons[0].pressed) {
@@ -162,12 +166,6 @@ function handleGamepad(gp) {
         // Cuando el usuario suelta el botón, permitimos que se pueda abrir de nuevo
         settingsWindowOpened = false;
     }
-
-    // D-Pad move
-    if (gp.buttons[15].pressed) moveSelection(1);
-    if (gp.buttons[14].pressed) moveSelection(-1);
-    if (gp.buttons[13].pressed) moveSelection(cols);
-    if (gp.buttons[12].pressed) moveSelection(-cols);
 }
 
 window.addEventListener("keydown", (e) => {
