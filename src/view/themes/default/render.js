@@ -1,5 +1,5 @@
-import { executeGame, getLocalGames, updateGameLastUse } from "./util/games.js";
-import { playSound, SOUND } from "./util/sound.js";
+import { executeGame, getLocalGames, updateGameLastUse } from "../../util/games.js";
+import { playSound, SOUND } from "../../util/sound.js";
 
 const MOVE_DELAY = 200;
 const HOLD_TIME = 1500;

@@ -1,8 +1,8 @@
 body {
+    --background: black;
+    --var-active-border-color: white;
     margin: 60px;
-    background: black;
-    color: #fff;
-    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--background);
 }
 
 * {
@@ -20,21 +20,20 @@ body {
 }
 
 .card {
-    background: #2a2a2a;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 8px 20px rgba(0, 0, 0, .4);
     transition: transform .2s, box-shadow .2s;
     cursor: pointer;
-    outline: 8px solid black;
-    border: 8px solid black;
+    outline: 8px solid var(--background);
+    border: 8px solid var(--background);
 }
 
 .card.active {
     transform: scale(1.1);
-    outline: 8px solid white;
-    border: 8px solid black;
-    box-shadow: 0 0 25px white;
+    outline: 8px solid var(--var-active-border-color);
+    border: 8px solid var(--background);
+    box-shadow: 0 0 25px var(--var-active-border-color);
 }
 
 .card-image {

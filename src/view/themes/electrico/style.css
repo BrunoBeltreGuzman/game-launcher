@@ -1,0 +1,213 @@
+/* --- Estilos Globales para el Body --- */
+body {
+    /* Fondo muy oscuro con un toque de azul medianoche para profundidad */
+    --background: #05010e; 
+    /* El color de acento para la tarjeta activa es un magenta/morado eléctrico */
+    --var-active-border-color: #ff00ff; 
+    /* Color cian eléctrico para efectos secundarios */
+    --secondary-electric: #00ffff;
+    /* Color morado base de la interfaz */
+    --base-purple: #1e004a;
+
+    margin: 60px;
+    background-color: var(--background);
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    
+    /* Efecto de viñeteado y brillo general */
+    background-image: 
+        radial-gradient(circle, transparent 50%, rgba(0,0,0,0.5) 100%),
+        url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.03"/%3E%3C/svg%3E'); /* Textura de ruido sutil */
+    
+    position: relative;
+    overflow-x: hidden; /* Evita desbordamiento por animaciones */
+}
+
+/* Ocultar el cursor y la barra de desplazamiento */
+* {
+    cursor: none;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+/* --- Efecto de Rayos Eléctricos de Fondo --- */
+/* Agrega un pseudo-elemento al body para simular los rayos que se cruzan */
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    pointer-events: none;
+    background: 
+        linear-gradient(45deg, transparent 48%, var(--secondary-electric) 50%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, var(--var-active-border-color) 50%, transparent 52%);
+    background-size: 100px 100px;
+    opacity: 0.1;
+    z-index: -1;
+    animation: backgroundGlitch 0.2s infinite;
+}
+
+body::after {
+    animation-delay: 0.1s;
+    opacity: 0.05;
+}
+
+@keyframes backgroundGlitch {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(5px, 5px); }
+}
+
+/* --- Cuadrícula de Tarjetas --- */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(580px, 1fr));
+    gap: 24px;
+    perspective: 1000px; /* Para efecto 3D en la tarjeta activa */
+}
+
+/* --- Estilo de Tarjeta Base --- */
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: var(--base-purple);
+    /* Sombra más densa y oscura para estilo retro */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+    transition: 
+        transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+        box-shadow 0.3s ease,
+        outline 0.1s ease;
+    cursor: pointer;
+    
+    /* Outline y border iniciales que combinan con el fondo oscuro */
+    outline: 8px solid var(--background);
+    border: 8px solid var(--base-purple);
+    
+    position: relative;
+}
+
+/* --- Estilo de Imagen de Tarjeta --- */
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-position: center;
+    object-fit: cover;
+    display: block;
+    transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.card.active {
+    /* Combinamos las propiedades transform en una sola línea */
+    transform: scale(1.1) rotateX(2deg); /* Efecto 3D de sobresaliente y rotación */
+    
+    /* El borde activo ahora es un morado/magenta eléctrico */
+    outline: 8px solid var(--var-active-border-color); /* Resalta el borde */
+    border: 8px solid var(--background); /* Mantiene el borde interno */
+    
+    /* Brillo eléctrico intenso */
+    box-shadow: 
+        0 0 30px rgba(255, 0, 255, 0.7),
+        0 0 60px rgba(0, 255, 255, 0.5); /* Añade un brillo intenso y profundo */
+    
+    /* Efecto de glitch constante en la tarjeta activa */
+    animation: cardGlitch 0.3s infinite; /* Aplica la animación de glitch */
+
+    z-index: 1000; /* SUPER IMPORTANTE */
+
+}
+
+.card.active .card-image {
+    filter: sepia(0) saturate(1.5) hue-rotate(0deg); /* Restaura colores más vivos y elimina el tono morado */
+    transform: scale(1.02); /* Pequeño zoom interno */
+}
+
+/* --- Pseudo-elemento para el Efecto de Glitch RGB/Color-Shift --- */
+/* Crea una copia desfasada de la imagen para el efecto de glitch */
+.card.active::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: inherit; /* Copia la imagen de fondo */
+    background-size: cover;
+    background-position: center;
+    opacity: 0.6;
+    mix-blend-mode: color-dodge; /* Combina los colores de forma agresiva */
+    animation: glitchEffect 0.2s infinite;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* --- Pseudo-elemento para el Efecto de Rayos Eléctricos --- */
+/* Crea los rayos que rodean la tarjeta activa */
+.card.active::after {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border: 4px solid var(--secondary-electric);
+    border-radius: 16px;
+    pointer-events: none;
+    animation: electricBorder 0.15s infinite;
+    z-index: 2;
+    /* Escalamos y desplazamos ligeramente el borde eléctrico */
+    transform: scale(1.12) translate(0, -2px); /* Asegura que el borde eléctrico sobresalga aún más */
+}
+
+/* --- Animaciones Keyframes --- */
+
+@keyframes cardGlitch {
+    0% { transform: scale(1.08) rotateX(2deg) translate(0, 0); }
+    10% { transform: scale(1.08) rotateX(2deg) translate(-2px, 2px); }
+    20% { transform: scale(1.08) rotateX(2deg) translate(2px, -2px); }
+    30% { transform: scale(1.08) rotateX(2deg) translate(0, 0); }
+    100% { transform: scale(1.08) rotateX(2deg) translate(0, 0); }
+}
+
+@keyframes glitchEffect {
+    0% { transform: translate(0, 0); opacity: 0.6; }
+    20% { transform: translate(-5px, 0); opacity: 0.8; filter: hue-rotate(90deg); }
+    40% { transform: translate(5px, 0); opacity: 0.6; filter: hue-rotate(180deg); }
+    60% { transform: translate(-2px, 0); opacity: 0.8; filter: hue-rotate(270deg); }
+    80% { transform: translate(2px, 0); opacity: 0.6; filter: hue-rotate(360deg); }
+    100% { transform: translate(0, 0); opacity: 0.6; }
+}
+
+@keyframes electricBorder {
+    0% { border-color: var(--secondary-electric); opacity: 1; box-shadow: 0 0 10px var(--secondary-electric); }
+    50% { border-color: var(--var-active-border-color); opacity: 0.8; box-shadow: 0 0 20px var(--var-active-border-color); }
+    100% { border-color: var(--secondary-electric); opacity: 1; box-shadow: 0 0 10px var(--secondary-electric); }
+}
+
+/* --- Títulos de Tarjetas (Opcional) --- */
+/* Si tienes títulos dentro de las tarjetas, dales un estilo eléctrico */
+.card-title {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    z-index: 3;
+    transition: text-shadow 0.2s ease;
+}
+
+.card.active .card-title {
+    text-shadow: 
+        0 0 10px var(--var-active-border-color),
+        0 0 20px var(--secondary-electric);
+}
+

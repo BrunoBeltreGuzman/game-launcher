@@ -22,7 +22,7 @@ function createAppWindow() {
             contextIsolation: true,
         }
     });
-    win.loadFile(path.join(__dirname, 'view', 'windows', 'app', 'index.html'));
+    win.loadFile(path.join(__dirname, 'view', 'themes', config.system.activeThemeColor, 'index.html'));
     if (config.development.enabled) {
         win.webContents.openDevTools();
         const userData = app.getPath('userData');
