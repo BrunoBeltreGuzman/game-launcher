@@ -1,7 +1,7 @@
 module.exports = {
     system: {
         openAtWindowsStartup: true,
-        closeAppOnGameLaunch: false,
+        closeAppOnGameLaunch: true,
         activeThemeColor: "default"
     },
     igdb: {
