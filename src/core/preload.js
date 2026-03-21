@@ -1,4 +1,4 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer, shell } = require('electron');
 
 contextBridge.exposeInMainWorld('api', {
     executeGame: (gamePath) => {
@@ -24,5 +24,8 @@ contextBridge.exposeInMainWorld('api', {
     },
     saveConfig: (config) => {
         return ipcRenderer.invoke('save-config', config);
+    }, 
+    openURL: (url) => {
+        shell.openExternal(url)
     }
 });

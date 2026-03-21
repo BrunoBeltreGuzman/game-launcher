@@ -1,9 +1,9 @@
 const { app, BrowserWindow, ipcMain, screen } = require('electron');
-const path = require('path');
+const path = require('node:path');
 const { getConfig, saveConfig } = require('./data/configDB');
 const { restartPC, shutdownPC, executeGame } = require('./core/controller');
 const { getLocalGames, updateGameLastUse } = require('./core/games');
-const fs = require('fs');
+const fs = require('node:fs');
 const config = getConfig();
 
 function createAppWindow() {
@@ -22,7 +22,7 @@ function createAppWindow() {
             contextIsolation: true,
         }
     });
-    win.loadFile(path.join(__dirname, 'view', 'themes', config.system.activeThemeColor, 'index.html'));
+    win.loadFile(path.join(__dirname, 'view', 'windows', 'app','index.html'));
     if (config.development.enabled) {
         win.webContents.openDevTools();
         const userData = app.getPath('userData');
@@ -47,9 +47,7 @@ function createSettingsWindow() {
             contextIsolation: true,
         }
     });
-
     win.loadFile(path.join(__dirname, 'view', 'windows', 'settings', 'index.html'));
-
     if (config.development.enabled) {
         win.webContents.openDevTools();
     }

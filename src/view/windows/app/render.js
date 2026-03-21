@@ -24,7 +24,6 @@ async function renderGames() {
     const container = document.getElementById('container');
     container.innerHTML = "<p>Cargando juegos, por favor espere...</p>";
     const localGames = await getLocalGames();
-    config = await window.api.getConfig();
     if (config.development.enabled) {
         console.log(localGames);
     }
@@ -108,7 +107,7 @@ function handleGamepad(gp) {
     if (gp.axes[0] < -0.5) moveSelection(-1);
     if (gp.axes[1] > 0.5) moveSelection(cols);
     if (gp.axes[1] < -0.5) moveSelection(-cols);
-    
+
     // D-Pad move
     if (gp.buttons[15].pressed) moveSelection(1);
     if (gp.buttons[14].pressed) moveSelection(-1);
@@ -207,4 +206,17 @@ function refreshListView() {
     window.scrollTo(0, 0);
 }
 
-renderGames().then(() => playSound(SOUND.SYSTEM, config));
+window.addEventListener("load", async () => {
+    config = await window.api.getConfig();
+    if (!config.igdb.clientId || !config.igdb.accessToken) {
+        const igdbPage = "https://api-docs.igdb.com/#getting-started";
+        alert("You must set your IGDB client ID and access token in the settings window.");
+        alert("For more information, please visit " + igdbPage);
+        window.api.openURL(igdbPage);
+        window.api.openSettingsWindow();
+    } else {
+        await renderGames();
+        playSound(SOUND.SYSTEM, config);
+        document.getElementsByTagName('link')[0].href = `../../themes/${config.system.activeThemeColor}/style.css`;
+    }
+});

@@ -5,8 +5,8 @@ module.exports = {
         activeThemeColor: "default"
     },
     igdb: {
-        clientId: "ywwhqisuzjd0xycj7ad1sj12jp74ti",
-        accessToken: "y4b4i1n9y0jxtmgsrw47u2jm04pav3"
+        clientId: "",
+        accessToken: ""
     },
     audio: {
         enableStartupSound: true,
@@ -37,12 +37,12 @@ module.exports = {
             description: "Tema base por defecto",
         },
         {
-            key: "tierra",
+            key: "land",
             name: "Tierra Retro y Monocromo",
             description: "Tema inspirado en la naturaleza, con colores tierra y verdes para una experiencia más orgánica.",
         },
         {
-            key: "electrico",
+            key: "electric",
             name: "Glitch Eléctrico y Morado",
             description: "Tema vibrante con colores neón y contrastes fuertes, ideal para los amantes de la estética cyberpunk.",
         }

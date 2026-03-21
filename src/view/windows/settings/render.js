@@ -10,7 +10,6 @@ btnSave.addEventListener("click", async () => {
         alert("Invalid JSON!");
         return;
     }
-
     try {
         const save = await window.api.saveConfig(preConfig.value);
         if (save) {
