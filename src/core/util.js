@@ -24,6 +24,8 @@ async function getImage(gameName) {
         });
         const json = await data.json();
         if (!json || !json.length) {
+            console.log(`No se encontraron resultados para ${gameName}`);
+            console.log(`Respuesta: ${JSON.stringify(json)}`);
             return null;
         }
         if (json && json.length) {
@@ -34,6 +36,8 @@ async function getImage(gameName) {
         const gameWithCover = json.find(game => game?.cover?.image_id);
         const imageId = gameWithCover?.cover?.image_id;
         if (!imageId) {
+            console.log(`No se encontraron imágenes para ${gameName}`);
+            console.log(`Respuesta: ${JSON.stringify(json)}`);
             return null;
         }
         const imageUrl = `https://images.igdb.com/igdb/image/upload/t_1080p/${imageId}.jpg`;
@@ -42,6 +46,8 @@ async function getImage(gameName) {
         }
         const filePath = path.join(cachePath, `${imageId}.jpg`);
         if (fs.existsSync(filePath)) {
+            console.log(`La imagen de ${gameName} ya estaba descargada`);
+            console.log(`Ruta: ${filePath}`);
             return filePath;
         }
         const imageResponse = await fetch(imageUrl);

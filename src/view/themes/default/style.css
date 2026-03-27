@@ -3,6 +3,7 @@ body {
     --var-active-border-color: white;
     margin: 60px;
     background-color: var(--background);
+    color: white;
 }
 
 * {
