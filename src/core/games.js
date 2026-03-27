@@ -17,9 +17,11 @@ async function getLocalGames() {
                 if (!stat.isDirectory() && gameName.match(filtroExtensiones)) {
                     const name = gameName.replace(filtroExtensiones, '');
                     const gameDb = getByLocalNameAndPath(name, fullPath);
-                    if (gameDb != null) {
+                    if (gameDb != null && !isOlderThan30Days(new Date(gameDb.loadDate))) {
+                        console.log(`Usando juego ${name} de la base de datos`);
                         games.push(gameDb);
                     } else {
+                        console.log(`Buscando juego ${name}`);
                         const imgPath = await getImage(name);
                         if (!imgPath) {
                             console.log(`No se pudo obtener la imagen de ${name}`);
@@ -30,7 +32,8 @@ async function getLocalGames() {
                             searchName: name,
                             path: fullPath,
                             imagePath: imgPath,
-                            lastUse: new Date()
+                            lastUse: new Date(),
+                            loadDate: new Date()
                         }
                         games.push(newGame);
                     }
@@ -49,9 +52,14 @@ async function getLocalGames() {
     return games;
 }
 
+function isOlderThan30Days(date) {
+    var now = new Date();
+    var diff = now - date;
+    return diff > (30 * 24 * 60 * 60 * 1000);
+}
 
 function updateGameLastUse(_, localName) {
-    const game = getGameByLocalName(localName);    
+    const game = getGameByLocalName(localName);
     game.lastUse = new Date();
     updateGameByLocalName(game);
     return game;
