@@ -22,7 +22,7 @@ function createAppWindow() {
             contextIsolation: true,
         }
     });
-    win.loadFile(path.join(__dirname, 'view', 'windows', 'app','index.html'));
+    win.loadFile(path.join(__dirname, 'view', 'windows', 'app', 'index.html'));
     if (config.development.enabled) {
         win.webContents.openDevTools();
         const userData = app.getPath('userData');
@@ -31,6 +31,28 @@ function createAppWindow() {
             if (config.development.clearLocalDataOnStart) fs.rmSync(fullPath, { recursive: true, force: true });
         });
     }
+    win.webContents.on('before-input-event', (event, input) => {
+        try {
+            if (input.control && input.type === 'keyDown') {
+                if (input.key === '+' || input.key === '=') {
+                    win.webContents.setZoomFactor(win.webContents.getZoomFactor() + 0.1);
+                    event.preventDefault();
+                }
+                
+                if (input.key === '-') {
+                    win.webContents.setZoomFactor(win.webContents.getZoomFactor() - 0.1);
+                    event.preventDefault();
+                }
+                
+                if (input.key === '0') {
+                    win.webContents.setZoomFactor(1);
+                    event.preventDefault();
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    });
 }
 
 function createSettingsWindow() {

@@ -53,8 +53,8 @@ async function getLocalGames() {
 }
 
 function isOlderThan30Days(date) {
-    var now = new Date();
-    var diff = now - date;
+    const now = new Date();
+    const diff = now - date;
     return diff > (30 * 24 * 60 * 60 * 1000);
 }
 
